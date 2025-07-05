@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -351,4 +352,359 @@
     loadSong(songData);
   </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Player</title>
+  <style>
+    :root {
+      --primary-color: #ff6b6b;
+      --secondary-color: #444;
+      --background-dark: #222;
+      --background-darker: #1d1d1d;
+      --text-color: #fff;
+      --progress-bg: #555;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--background-darker), #333);
+      color: var(--text-color);
+      text-align: center;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .player {
+      background: var(--background-dark);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease;
+    }
+
+    .player:hover {
+      transform: translateY(-5px);
+    }
+
+    .album-art {
+      width: 100%;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      transition: transform 0.4s ease;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .album-art:hover {
+      transform: scale(1.03);
+    }
+
+    .song-info {
+      margin-bottom: 20px;
+    }
+
+    .song-title {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .artist {
+      color: #aaa;
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    .time-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-top: 5px;
+    }
+
+    .progress-container {
+      background: var(--progress-bg);
+      height: 6px;
+      border-radius: 5px;
+      margin: 20px 0;
+      cursor: pointer;
+      width: 100%;
+      position: relative;
+    }
+
+    .progress {
+      background: var(--primary-color);
+      height: 100%;
+      width: 0%;
+      border-radius: 5px;
+      transition: width 0.1s linear;
+      position: relative;
+    }
+
+    .progress::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      background: var(--text-color);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .progress-container:hover .progress::after {
+      opacity: 1;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .controls button {
+      background: var(--secondary-color);
+      border: none;
+      color: var(--text-color);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+
+    .controls button:hover {
+      background: var(--primary-color);
+      transform: scale(1.05);
+    }
+
+    .controls button:active {
+      transform: scale(0.95);
+    }
+
+    .play-btn {
+      width: 60px !important;
+      height: 60px !important;
+      font-size: 1.5rem !important;
+      background: var(--primary-color) !important;
+    }
+
+    .volume-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .volume-slider {
+      width: 100px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 480px) {
+      .player {
+        padding: 20px;
+      }
+      
+      .controls button {
+        width: 45px;
+        height: 45px;
+      }
+      
+      .play-btn {
+        width: 55px !important;
+        height: 55px !important;
+      }
+    }
+
+    /* Animation for play/pause */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .playing {
+      animation: pulse 2s infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="player">
+    <img src="https://i.imgur.com/Hw7VHOE.jpeg" alt="Album Art" class="album-art" id="album-art">
+    <div class="song-info">
+      <div class="song-title" id="song-title">Chill Vibes</div>
+      <div class="artist" id="artist">Sample Artist</div>
+    </div>
+    
+    <audio id="audio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+    <div class="time-info">
+      <span id="current-time">0:00</span>
+      <span id="duration">0:00</span>
+    </div>
+    <div class="progress-container" id="progress-container">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="controls">
+      <button onclick="rewind()" title="Rewind 10 seconds">⏪</button>
+      <button onclick="togglePlay()" class="play-btn" title="Play/Pause">
+        <span id="play-icon">▶️</span>
+      </button>
+      <button onclick="forward()" title="Forward 10 seconds">⏩</button>
+    </div>
+
+    <div class="volume-container">
+      <span>🔈</span>
+      <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.7">
+      <span>🔊</span>
+    </div>
+  </div>
+
+  <script>
+    const audio = document.getElementById("audio");
+    const playIcon = document.getElementById("play-icon");
+    const progress = document.getElementById("progress");
+    const progressContainer = document.getElementById("progress-container");
+    const currentTimeEl = document.getElementById("current-time");
+    const durationEl = document.getElementById("duration");
+    const volumeSlider = document.getElementById("volume-slider");
+    const albumArt = document.getElementById("album-art");
+    const songTitle = document.getElementById("song-title");
+    const artist = document.getElementById("artist");
+
+    // Set initial volume
+    audio.volume = volumeSlider.value;
+
+    // Format time (seconds to mm:ss)
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function togglePlay() {
+      if (audio.paused) {
+        audio.play();
+        playIcon.textContent = "⏸️";
+        albumArt.classList.add("playing");
+      } else {
+        audio.pause();
+        playIcon.textContent = "▶️";
+        albumArt.classList.remove("playing");
+      }
+    }
+
+    function rewind() {
+      audio.currentTime = Math.max(0, audio.currentTime - 10);
+    }
+
+    function forward() {
+      audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
+    }
+
+    // Update progress bar
+    audio.addEventListener("timeupdate", () => {
+      const progressPercent = (audio.currentTime / audio.duration) * 100;
+      progress.style.width = `${progressPercent}%`;
+      currentTimeEl.textContent = formatTime(audio.currentTime);
+    });
+
+    // Update duration display when metadata is loaded
+    audio.addEventListener("loadedmetadata", () => {
+      durationEl.textContent = formatTime(audio.duration);
+    });
+
+    // Click on progress bar to seek
+    progressContainer.addEventListener("click", (e) => {
+      const width = progressContainer.clientWidth;
+      const clickX = e.offsetX;
+      const duration = audio.duration;
+      audio.currentTime = (clickX / width) * duration;
+    });
+
+    // Volume control
+    volumeSlider.addEventListener("input", () => {
+      audio.volume = volumeSlider.value;
+    });
+
+    // Keyboard controls
+    document.addEventListener("keydown", (e) => {
+      switch(e.code) {
+        case "Space":
+          e.preventDefault();
+          togglePlay();
+          break;
+        case "ArrowLeft":
+          rewind();
+          break;
+        case "ArrowRight":
+          forward();
+          break;
+        case "ArrowUp":
+          volumeSlider.value = Math.min(1, parseFloat(volumeSlider.value) + 0.1);
+          audio.volume = volumeSlider.value;
+          break;
+        case "ArrowDown":
+          volumeSlider.value = Math.max(0, parseFloat(volumeSlider.value) - 0.1);
+          audio.volume = volumeSlider.value;
+          break;
+      }
+    });
+
+    // Song ended
+    audio.addEventListener("ended", () => {
+      playIcon.textContent = "▶️";
+      albumArt.classList.remove("playing");
+    });
+
+    // Sample data - in a real app this would come from an API
+    const songData = {
+      title: "Chill Vibes",
+      artist: "Sample Artist",
+      albumArt: "https://i.imgur.com/Hw7VHOE.jpeg",
+      audioSrc: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    };
+
+    // Load song data
+    function loadSong(data) {
+      songTitle.textContent = data.title;
+      artist.textContent = data.artist;
+      albumArt.src = data.albumArt;
+      audio.src = data.audioSrc;
+    }
+
+    // Initialize with sample data
+    loadSong(songData);
+  </script>
+</body>
+>>>>>>> ed34e305ddae5d786aa6193b7f46d521cabab28a
 </html>
